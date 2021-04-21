@@ -532,11 +532,6 @@ function getBlockTotalFeesFromCoinbaseTxAndBlockHeight(coinbaseTx, blockHeight) 
 
 function estimatedSupply(height) {
 	var checkpointData = coinConfig.coinSupplyCheckpointsByNetwork[global.activeBlockchain];
-	
-	if (!checkpointData) {
-		return new Decimal(0);
-	}
-
 	var checkpointHeight = checkpointData[0];
 	var checkpointSupply = checkpointData[1];
 

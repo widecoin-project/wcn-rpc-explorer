@@ -22,7 +22,7 @@ A clear and concise description of what the bug is.
 
 Please include the content from the following files. **BE SURE TO MODIFY YOUR CREDENTIALS BEFORE SUBMITTING!!!**
  - bitcoin.conf
- - Your btc-rpc-explorer environment configuration (either `$WORKING_DIR/.env` or `~/.config/btc-rpc-explorer.env`)
+ - Your wcn-rpc-explorer environment configuration (either `$WORKING_DIR/.env` or `~/.config/wcn-rpc-explorer.env`)
 
 **To Reproduce**
 

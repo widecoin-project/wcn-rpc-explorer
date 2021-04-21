@@ -10,18 +10,13 @@ mixin pageTitle(text, subtext, copyableSubtext=false)
 	//hr.mb-3
 
 
-mixin sectionTitle(text, toggle=false, toggleUniqueClass, toggleUserSettingName, toggleOpen, tooltipText)
+mixin sectionTitle(text, toggle=false, toggleUniqueClass, toggleUserSettingName, toggleOpen)
 	if (false)
 		pre
 			code.json #{JSON.stringify(session.userSettings)}
 
 	h3.h5.mb-1.fw-light(class=(toggle && !toggleOpen ? "mb-section" : false), class=(!toggle || toggleOpen ? "d-block" : "d-none"))
-		if (tooltipText)
-			span.border-dotted(title=tooltipText, data-bs-toggle="tooltip")
-				| #{text}
-
-		else
-			| #{text}
+		| #{text}
 
 		if (toggle)
 			small(title=`Toggle ${text}`, data-bs-toggle="tooltip")
@@ -209,7 +204,7 @@ mixin pageTab(name, defaultActive=false)
 
 mixin valueDisplay(val)
 	if (val > 0)
-		if (userSettings.displayCurrency == "btc")
+		if (userSettings.displayCurrency == "wcn")
 			+_valueDisplayBtc(val)
 
 		else if (userSettings.displayCurrency == "sat")
@@ -570,7 +565,7 @@ mixin pagination(limit, offset, sort, itemCount, baseUrl, justification="start",
 
 
 mixin graphPageScriptSetup
-	script(src="./js/chart.bundle.min.js", integrity="sha384-qgOtiGNaHh9fVWUnRjyHlV39rfbDcvPPkEzL1RHvsHKbuqUqM6uybNuVnghY2z4/")
+	script(src="./js/chart.bundle.min.js", integrity="")
 	
 	if (userSettings.uiTheme && userSettings.uiTheme == "dark")
 		script.

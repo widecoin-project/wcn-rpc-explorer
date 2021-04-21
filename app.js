@@ -7,53 +7,22 @@ const path = require('path');
 const dotenv = require("dotenv");
 const fs = require('fs');
 
-const debug = require("debug");
+const configPaths = [ path.join(os.homedir(), '.config', 'wcn-rpc-explorer.env'), path.join(process.cwd(), '.env') ];
+configPaths.filter(fs.existsSync).forEach(path => {
+	console.log('Loading env file:', path);
+	dotenv.config({ path });
+});
 
-// start with this, we will update after loading any .env files
-const debugDefaultCategories = "btcexp:app,btcexp:error";
-debug.enable(debugDefaultCategories);
+global.cacheStats = {};
+
+// debug module is already loaded by the time we do dotenv.config
+// so refresh the status of DEBUG env var
+const debug = require("debug");
+debug.enable(process.env.DEBUG || "btcexp:app,btcexp:error");
 
 const debugLog = debug("btcexp:app");
 const debugErrorLog = debug("btcexp:error");
 const debugPerfLog = debug("btcexp:actionPerformace");
-
-const configPaths = [
-	path.join(os.homedir(), ".config", "btc-rpc-explorer.env"),
-	path.join("/etc", "btc-rpc-explorer", ".env"),
-	path.join(process.cwd(), ".env"),
-];
-
-debugLog("Searching for config files...");
-let configFileLoaded = false;
-configPaths.forEach(path => {
-	if (fs.existsSync(path)) {
-		debugLog(`Config file found at ${path}, loading...`);
-
-		dotenv.config({ path });
-
-		configFileLoaded = true;
-
-	} else {
-		debugLog(`Config file not found at ${path}, continuing...`);
-	}
-});
-
-if (!configFileLoaded) {
-	debugLog("No config files found. Using all defaults.");
-
-	if (!process.env.NODE_ENV) {
-		process.env.NODE_ENV = "production";
-	}
-}
-
-// debug module is already loaded by the time we do dotenv.config
-// so refresh the status of DEBUG env var
-debug.enable(process.env.DEBUG || debugDefaultCategories);
-
-
-global.cacheStats = {};
-
-
 
 const express = require('express');
 const favicon = require('serve-favicon');
@@ -233,7 +202,7 @@ function loadMiningPoolConfigs() {
 
 function getSourcecodeProjectMetadata() {
 	var options = {
-		url: "https://api.github.com/repos/janoside/btc-rpc-explorer",
+		url: "https://api.github.com/repos/david/wcn-rpc-explorer",
 		headers: {
 			'User-Agent': 'request'
 		}
@@ -322,7 +291,8 @@ async function onRpcConnectionVerified(getnetworkinfo, getblockchaininfo) {
 		global.pruneHeight = getblockchaininfo.pruneheight;
 	}
 
-	var bitcoinCoreVersionRegex = /^.*\/Satoshi\:(.*)\/.*$/;
+	//var bitcoinCoreVersionRegex = /^.*\/Satoshi\:(.*)\/.*$/;
+	var bitcoinCoreVersionRegex = /^.*\/WidecoinCore\:(.*)\/.*$/;
 
 	var match = bitcoinCoreVersionRegex.exec(getnetworkinfo.subversion);
 	if (match) {
@@ -360,7 +330,7 @@ async function onRpcConnectionVerified(getnetworkinfo, getblockchaininfo) {
 		// short-circuit: force all RPC calls to pass their version checks - this will likely lead to errors / instability / unexpected results
 		global.btcNodeSemver = "1000.1000.0"
 
-		debugErrorLog(`Unable to parse node version string: ${getnetworkinfo.subversion} - RPC versioning will likely be unreliable. Is your node a version of Bitcoin Core?`);
+		debugErrorLog(`Unable to parse node version string: ${getnetworkinfo.subversion} - RPC versioning will likely be unreliable. Is your node a version ofWidecoin Core?`);
 	}
 	
 	debugLog(`RPC Connected: version=${getnetworkinfo.version} subversion=${getnetworkinfo.subversion}, parsedVersion(used for RPC versioning)=${global.btcNodeSemver}, protocolversion=${getnetworkinfo.protocolversion}, chain=${getblockchaininfo.chain}, services=${services}`);
@@ -715,7 +685,7 @@ expressApp.use(function(req, res, next) {
 
 
 	if (!userSettings.displayCurrency) {
-		userSettings.displayCurrency = "btc";
+		userSettings.displayCurrency = "wcn";
 	}
 
 	if (!userSettings.localCurrency) {
