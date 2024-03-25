@@ -1,4 +1,3 @@
-ads.txt
 # Logs
 logs
 *.log
@@ -62,3 +61,5 @@ typings/
 cache/
 
 *.css.map
+
+.github
